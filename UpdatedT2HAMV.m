@@ -9,7 +9,7 @@ targetSize = [227, 227];
 
 % Get the screen numbers. This gives us a number for each of the screens
 % attached to our computer.
-%       33322 67348
+%       33322 67348   
 
 screenNumber = max(Screen('Screens'));
 
@@ -171,16 +171,9 @@ rightSideT = 0;
 % Preallocate the selectedNumbers struct
 selectedNumbersT = [];
 dataMatrixT = zeros(length(imageArrayOArrayTutorial));
-
-% Initialize time variables; make sure this is NOT commented out when
-% running experiment
-TIMEDELAY = 0.3; % Time delay in seconds
-inputDelay = .2;
-
-%TEST TIME DELAY (comment out when not a test!!!!!)
-% TIMEDELAY = 0.001; 
-% inputDelay = 0.001;
-
+% Initialize time variables
+TIMEDELAYT = 0.001; % Time delay in seconds
+inputDelayT = .001;
 
 % Load the first image into a texture
 texture = Screen('MakeTexture', window, images{1});
@@ -217,7 +210,7 @@ while ~spacePressed
     % Check for spacebar press
     [keyIsDown, ~, keyCode] = KbCheck;
     currentTime = GetSecs;
-    if keyIsDown && keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelay)
+    if keyIsDown && keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
         spacePressed = true;
         lastKeyPressTime = currentTime;
     end
@@ -242,7 +235,7 @@ while ~spacePressed
     % Check for spacebar press
     [keyIsDown, ~, keyCode] = KbCheck;
     currentTime = GetSecs;
-    if keyIsDown && keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelay)
+    if keyIsDown && keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
         spacePressed = true;
         lastKeyPressTime = currentTime;
     end
@@ -308,7 +301,7 @@ exitSlide = false;
 spaceKey = KbName('space'); % Get the keycode for the space bar once to optimize
 thisLastInputTime = GetSecs; % Record the time when the last space was pressed
 exitTutorial = false;
-% inputDelay = 0.3;
+inputDelay = 0.3;
 while ~exitTutorial
     [keyIsDown, secs, keyCode] = KbCheck;
     if keyIsDown && keyCode(spaceKey) && (secs - thisLastInputTime) > inputDelay
@@ -394,7 +387,7 @@ while counterT <= 4
                yRectT = otherImageRectT;
             end
             
-            if elapsedTimeT >= TIMEDELAY && mouseXT >= xRectT(1) && mouseXT <= xRectT(3) && mouseYT >= xRectT(2) && mouseYT <= xRectT(4)
+            if elapsedTimeT >= TIMEDELAYT && mouseXT >= xRectT(1) && mouseXT <= xRectT(3) && mouseYT >= xRectT(2) && mouseYT <= xRectT(4)
                 if mod(xCycleT, 2) == 0 && xT < maxLengthT
                     xT = xT + 1;
                     lastInputTime = currentTimeT;
@@ -406,7 +399,7 @@ while counterT <= 4
                 end
             end
            
-            if elapsedTimeT >= TIMEDELAY && mouseXT >= yRectT(1) && mouseXT <= yRectT(3) && mouseYT >= yRectT(2) && mouseYT <= yRectT(4)
+            if elapsedTimeT >= TIMEDELAYT && mouseXT >= yRectT(1) && mouseXT <= yRectT(3) && mouseYT >= yRectT(2) && mouseYT <= yRectT(4)
                 if mod(yCycleT, 2) == 0 && yT < minLengthT
                     yT = yT + 1;
                     lastInputTime = currentTimeT;
@@ -466,7 +459,7 @@ while counterT <= 4
             thisTimeT = GetSecs;
             totalTimeT = thisTimeT - thisLastInputTimeT;
             
-            if ~isempty(userInputT) && ismember(userInputT, [1, 2, 3, 4]) && totalTimeT >= inputDelay
+            if ~isempty(userInputT) && ismember(userInputT, [1, 2, 3, 4]) && totalTimeT >= inputDelayT
                 selectedNumbersT = [selectedNumbersT; randomIntegerT];
                 thisLastInputTimeT = GetSecs;
                 dataMatrixT(leftSideT, rightSideT) = userInputT;
@@ -498,20 +491,20 @@ while ~spacePressed
     % Check for spacebar press
     [keyIsDown, ~, keyCode] = KbCheck;
     currentTime = GetSecs;
-    if keyIsDown && keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelay)
+    if keyIsDown && keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
         spacePressed = true;
         lastKeyPressTime = currentTime;
     end
 end  
 
-programNumber = 3; % make sure to change between 2 and 3 to alternate between tumor groups
+programNumber = 2;
 if programNumber == 1
     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Astrocytoma (Updated)');
-    tumorType = 'astrocytoma';      
+    tumorType = 'astrocytoma';
 elseif programNumber == 2
     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligoastrocytoma (Updated)');
      tumorType = 'oligoastrocytma';
-elseif programNumber == 3
+elseif programNumber == 3 
     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligodendroglioma (Updated)');
     tumorType = 'oligodendroglioma';
 end 
@@ -587,9 +580,9 @@ dataMatrix = NaN(n);
 dataMatrix(1:n+1:end) = 0;
 
 % Initialize time variables
-% TIMEDELAY = .3; % Time delay in seconds; 0.001 for testing and 0.3 otherwise
+TIMEDELAY = .0001; % Time delay in seconds
 thisLastInputTime = GetSecs;
-% inputDelay = .2; %0.0001 for testing and 0.2 otherwise
+inputDelay = .00111 33333333333333333333333333333333333333333301;
 % while counter <= numComparisons
 while counter <= length(arrayComb)
     randomInteger = randi([1, length(arrayComb)]);
@@ -733,7 +726,7 @@ while counter <= length(arrayComb)
             thisTime = GetSecs;
             totalTime = thisTime - thisLastInputTime;
             
-            if ~isempty(userInput) && ismember(userInput, [1, 2, 3, 4, 5, 6, 7, 8, 9]) && totalTime >= 23
+            if ~isempty(userInput) && ismember(userInput, [1, 2, 3, 4, 5, 6, 7, 8, 9]) && totalTime >= inputDelay
                 selectedNumbers = [selectedNumbers; randomInteger];
                 thisLastInputTime = GetSecs;
                 if (leftSide>rightSide)
@@ -836,7 +829,8 @@ filename = sprintf('T2HAM_%d_%s_%s.mat', programNumber, userName, currentDate);
 
 %Sam & Christina; 7/23/24 - temporary hard coding fix. Make sure to add
 %heiger\Desktop to path before running 
-desktopPath = "C:\Users\heiger\Desktop";
+%desktopPath = "C:\Users\heiger\Desktop";
+desktopPath = "C:\Users\samso\OneDrive\Desktop\lab\code\Haran\Data Sam";
 
 % Construct the full file path using the desktop path and the filename
 fullFilePath = fullfile(desktopPath, filename);
