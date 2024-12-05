@@ -1,0 +1,273 @@
+<deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
+  <configuration file="/Applications/MATLAB/Final Draft File/LabMemberTest.prj" location="/Applications/MATLAB/Final Draft File" name="LabMemberTest" target="target.ezdeploy.standalone" target-name="Application Compiler">
+    <param.appname>LabMemberTest</param.appname>
+    <param.icon>${PROJECT_ROOT}/LabMemberTest_resources/icon.icns</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}/LabMemberTest_resources/icon_48.png</file>
+      <file>${PROJECT_ROOT}/LabMemberTest_resources/icon_32.png</file>
+      <file>${PROJECT_ROOT}/LabMemberTest_resources/icon_24.png</file>
+      <file>${PROJECT_ROOT}/LabMemberTest_resources/icon_16.png</file>
+    </param.icons>
+    <param.version>1.0</param.version>
+    <param.authnamewatermark />
+    <param.email />
+    <param.company />
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.guid />
+    <param.installpath.string>/LabMemberTest/</param.installpath.string>
+    <param.installpath.combo>option.installpath.systemwideapp</param.installpath.combo>
+    <param.logo />
+    <param.install.notes />
+    <param.target.install.notes>In the following directions, replace MR/R2023a by the directory on the target machine where MATLAB is installed, or MR by the directory where the MATLAB Runtime is installed.
+
+If the environment variable DYLD_LIBRARY_PATH is undefined, set it to the following string:
+
+MR/R2023a/runtime/maci64:MR/R2023a/sys/os/maci64:MR/R2023a/bin/maci64
+
+If it is defined, set it to the following:
+
+${DYLD_LIBRARY_PATH}:MR/R2023a/runtime/maci64:MR/R2023a/sys/os/maci64:MR/R2023a/bin/maci64</param.target.install.notes>
+    <param.intermediate>${PROJECT_ROOT}/LabMemberTest/for_testing</param.intermediate>
+    <param.files.only>${PROJECT_ROOT}/LabMemberTest/for_redistribution_files_only</param.files.only>
+    <param.output>${PROJECT_ROOT}/LabMemberTest/for_redistribution</param.output>
+    <param.logdir>${PROJECT_ROOT}/LabMemberTest</param.logdir>
+    <param.enable.clean.build>false</param.enable.clean.build>
+    <param.user.defined.mcr.options />
+    <param.target.type>subtarget.standalone</param.target.type>
+    <param.support.packages />
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
+    <param.no.mcr>false</param.no.mcr>
+    <param.web.mcr.name>MyAppInstaller_web</param.web.mcr.name>
+    <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
+    <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
+    <param.windows.command.prompt>false</param.windows.command.prompt>
+    <param.create.log>false</param.create.log>
+    <param.log.file />
+    <param.native.matlab>false</param.native.matlab>
+    <param.checkbox>false</param.checkbox>
+    <param.example />
+    <param.help.text>Syntax 
+	  -? 
+	 
+ Input Arguments 
+	 -?  print help on how to use the application 
+	 input arguments</param.help.text>
+    <unset>
+      <param.version />
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.guid />
+      <param.installpath.string />
+      <param.installpath.combo />
+      <param.logo />
+      <param.install.notes />
+      <param.intermediate />
+      <param.files.only />
+      <param.output />
+      <param.logdir />
+      <param.enable.clean.build />
+      <param.user.defined.mcr.options />
+      <param.target.type />
+      <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
+      <param.no.mcr />
+      <param.web.mcr.name />
+      <param.package.mcr.name />
+      <param.no.mcr.name />
+      <param.windows.command.prompt />
+      <param.create.log />
+      <param.log.file />
+      <param.native.matlab />
+      <param.checkbox />
+      <param.example />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}/FInalDraft.m</file>
+    </fileset.main>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}/CompleteTesting</file>
+      <file>${PROJECT_ROOT}/changeDimension.m</file>
+      <file>${PROJECT_ROOT}/fileProcess.m</file>
+      <file>/Applications/Psychtoolbox/PsychOpenGL/MOGL</file>
+    </fileset.resources>
+    <fileset.package>
+      <file>${PROJECT_ROOT}/CompleteTesting</file>
+    </fileset.package>
+    <fileset.depfun>
+      <file>/Applications/Psychtoolbox/PsychBasic/Datapixx.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/DrawFormattedText.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/GetMouse.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/GetSecs.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/GetSecs.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/HideCursor.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/IOPort.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/IOPort.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/KbCheck.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/KbName.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/KbReleaseWait.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/KbWait.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/LoadPsychHID.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/MachAbsoluteTimeClockFrequency.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/MachAbsoluteTimeClockFrequency.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/MachGetPriorityMex.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/MachSetPriorityMex.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/PsychHID.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/PsychVulkanCore.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/Screen.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/Screen.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/SetMouse.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/ShowCursor.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/WaitSecs.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/WaitSecs.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/moglcore.mexmaci64</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/psychlasterror.m</file>
+      <file>/Applications/Psychtoolbox/PsychBasic/psychrethrow.m</file>
+      <file>/Applications/Psychtoolbox/PsychColorimetric/ConvertRGBSourceToRGBTargetColorSpace.m</file>
+      <file>/Applications/Psychtoolbox/PsychColorimetric/RGBToXYZMatrix.m</file>
+      <file>/Applications/Psychtoolbox/PsychColorimetric/XYZToRGBMatrix.m</file>
+      <file>/Applications/Psychtoolbox/PsychContributed/ple.m</file>
+      <file>/Applications/Psychtoolbox/PsychDocumentation/PsychPaidSupportAndServices.m</file>
+      <file>/Applications/Psychtoolbox/PsychFiles/PsychtoolboxConfigDir.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/AddImageUndistortionToGLOperator.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/AddToGLOperator.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/BitsPlusPlus.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/CountSlotsInGLOperator.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/CreateDisplayWarp.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/CreateGLOperator.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/CreatePseudoGrayLUT.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychColorCorrection.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychHDR.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychHelperCreateARGB2101010RemapCLUT.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychHelperCreateGenericLuminanceToRGBA16MaxLUT.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychHelperCreateGenericLuminanceToRGBA8LUT.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychHelperCreateRGB111110RemapCLUTAMDDCE8.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychHelperCreateRemapCLUT.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychImaging.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychVideoSwitcher.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/PsychVulkan.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/SetCompressedStereoSideBySideParameters.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychDontAutoResetOneshotFlags.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeed16BPCFixed.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeed16BPCFloat.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeed32BPCFloat.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedDualPass.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedDualWindowOutput.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedFastBackingStore.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedFastOffscreenWindows.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedFinalizedFBOSinks.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedHalfHeightWindow.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedHalfWidthWindow.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedImageProcessing.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedMultiPass.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedOtherStreamInput.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedOutputConversion.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedRetinaResolution.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedTripleWidthWindow.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychNeedTwiceWidthWindow.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychSkipSecondaryVsyncForFlip.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychSkipSwapForFlipOnce.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychSkipTimestampingForFlipOnce.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychSkipWaitForFlipOnce.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychUse32BPCFloatAsap.m</file>
+      <file>/Applications/Psychtoolbox/PsychGLImageProcessing/kPsychUseExternalSinkTextures.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/BitsPlusToolbox/BitsPlusDIO2Matrix.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/BitsPlusToolbox/bitsEncodeDIO.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/BitsPlusToolbox/bitsGoggles.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/DatapixxToolbox/DatapixxBasic/PsychDataPixx.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/FindSerialPort.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/GetKeyboardIndices.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/GetKeypadIndices.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/GetMouseIndices.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/PsychGPURasterizerOffsets.m</file>
+      <file>/Applications/Psychtoolbox/PsychHardware/PsychGPUTestAndTweakGammaTables.m</file>
+      <file>/Applications/Psychtoolbox/PsychJava/PsychJavaSwingCleanup.m</file>
+      <file>/Applications/Psychtoolbox/PsychJava/psychusejava.m</file>
+      <file>/Applications/Psychtoolbox/PsychObsolete/IsOS9.m</file>
+      <file>/Applications/Psychtoolbox/PsychObsolete/IsWindows.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/AssertGLSL.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/AssertOSX.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/AssertOpenGL.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/BackupCluts.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/IsARM.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/IsGLES.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/IsGLES1.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/IsLinux.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/IsMinimumOSXVersion.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/IsOSX.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/IsOctave.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/IsWayland.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/IsWin.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/LoadIdentityClut.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/OSName.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/PsychDefaultSetup.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/PsychGPUControl.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/PsychNumel.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/PsychtoolboxRoot.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/RestoreCluts.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/SaveIdentityClut.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/WhiteIndex.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/WrapString.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/kPsychExternalDisplayMethod.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/kPsychNeedHDRWindow.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/psychrange.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/sca.m</file>
+      <file>/Applications/Psychtoolbox/PsychOneliners/streq.m</file>
+      <file>/Applications/Psychtoolbox/PsychOpenGL/LoadGLSLProgramFromFiles.m</file>
+      <file>/Applications/Psychtoolbox/PsychOpenGL/LoadShaderFromFile.m</file>
+      <file>/Applications/Psychtoolbox/PsychPriority/MachGetPriorityFlavor.m</file>
+      <file>/Applications/Psychtoolbox/PsychPriority/MachSetStandardPriority.m</file>
+      <file>/Applications/Psychtoolbox/PsychPriority/MachSetTimeConstraintPriority.m</file>
+      <file>/Applications/Psychtoolbox/PsychPriority/MaxPriority.m</file>
+      <file>/Applications/Psychtoolbox/PsychPriority/Priority.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/CenterRect.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/CenterRectOnPointd.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/ClipRect.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/OffsetRect.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/RectBottom.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/RectCenter.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/RectCenterd.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/RectHeight.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/RectLeft.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/RectRight.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/RectTop.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/RectWidth.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/ScaleRect.m</file>
+      <file>/Applications/Psychtoolbox/PsychRects/SetRect.m</file>
+      <file>/Applications/Psychtoolbox/PsychSound/MOAL/source/al_auto.c</file>
+    </fileset.depfun>
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}/LabMemberTest/for_testing" name="run_LabMemberTest.sh" optional="false">/Applications/MATLAB/Final Draft File/LabMemberTest/for_testing/run_LabMemberTest.sh</file>
+      <file location="${PROJECT_ROOT}/LabMemberTest/for_testing" name="splash.png" optional="false">/Applications/MATLAB/Final Draft File/LabMemberTest/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/LabMemberTest/for_testing" name="LabMemberTest.app" optional="false">/Applications/MATLAB/Final Draft File/LabMemberTest/for_testing/LabMemberTest.app</file>
+      <file location="${PROJECT_ROOT}/LabMemberTest/for_testing" name="readme.txt" optional="true">/Applications/MATLAB/Final Draft File/LabMemberTest/for_testing/readme.txt</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2023a.app</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>12.4</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
