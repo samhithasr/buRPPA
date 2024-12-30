@@ -166,15 +166,25 @@ Screen('DrawTexture', window, introTexture, [], destRect);
 Screen('Flip', window);
 
 exitSlide = false;
+escapeKey = KbName('ESCAPE');
 spaceKey = KbName('space'); % Get the keycode for the space bar once to optimize
 thisLastInputTime = GetSecs; % Record the time when the last space was pressed
 
 while ~exitSlide
     [keyIsDown, secs, keyCode] = KbCheck;
     % Check if space was pressed and if enough time has passed since the last press
-    if keyIsDown && keyCode(spaceKey) && (secs - thisLastInputTime) > inputDelay
-        exitSlide = true;
-        thisLastInputTime = secs; % Update the time of the last space press
+    % if keyIsDown && keyCode(spaceKey) && (secs - thisLastInputTime) > inputDelay
+    %     exitSlide = true;
+    %     thisLastInputTime = secs; % Update the time of the last space press
+    % end
+    if keyIsDown
+        if keyCode(spaceKey) && (secs - thisLastInputTime) > inputDelay
+            exitSlide = true;
+            thisLastInputTime = secs; % Update the time of the last space press
+        elseif keyCode(escapeKey)
+            sca; % Close the screen and exit
+            return;
+        end
     end
 end
 
@@ -242,9 +252,18 @@ thisLastInputTime = GetSecs; % Reset the time for the tutorial section
 
 while ~exitTutorial
     [keyIsDown, secs, keyCode] = KbCheck;
-    if keyIsDown && keyCode(spaceKey) && (secs - thisLastInputTime) > inputDelay
-        exitTutorial = true;
-        thisLastInputTime = secs; % Update the time of the last space press
+    % if keyIsDown && keyCode(spaceKey) && (secs - thisLastInputTime) > inputDelay
+    %     exitTutorial = true;
+    %     thisLastInputTime = secs; % Update the time of the last space press
+    % end
+    if keyIsDown
+        if keyCode(spaceKey) && (secs - thisLastInputTime) > inputDelay
+            exitTutorial = true;
+            thisLastInputTime = secs; % Update the time of the last space press
+        elseif keyCode(escapeKey)
+            sca; % Close the screen and exit
+            return;
+        end
     end
 end
 
@@ -252,6 +271,12 @@ lastValidInputTime = GetSecs;
 
 
 while counter <= length(orderMatrix)
+    % [keyIsDown, secs, keyCode] = KbCheck;
+    % if keyCode(escapeKey)
+    %     sca; % Close the screen and exit
+    %     return;
+    % end
+
     disp("counter: " + counter);
     imageLength = length(imageArrayOArray{orderMatrix(counter)}); % length of image array of the current image
     if ismember(orderMatrix(counter), thirdNumbers)
@@ -355,6 +380,9 @@ while counter <= length(orderMatrix)
                     
                     % Reset y for the next image
                     y = 1;
+                elseif keyCode(escapeKey)
+                    sca; % Close the screen and exit
+                    return;
                 end
             end
         end

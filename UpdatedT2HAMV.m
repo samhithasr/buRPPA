@@ -9,7 +9,7 @@ targetSize = [227, 227];
 
 % Get the screen numbers. This gives us a number for each of the screens
 % attached to our computer.
-%       33322 67348   
+%       33322 67348
 
 screenNumber = max(Screen('Screens'));
 
@@ -171,9 +171,16 @@ rightSideT = 0;
 % Preallocate the selectedNumbers struct
 selectedNumbersT = [];
 dataMatrixT = zeros(length(imageArrayOArrayTutorial));
-% Initialize time variables
-TIMEDELAYT = 0.001; % Time delay in seconds
-inputDelayT = .001;
+
+% Initialize time variables; make sure this is NOT commented out when
+% running experiment
+% TIMEDELAYT = 0.3; % Time delay in seconds
+% inputDelayT = .2;
+
+%TEST TIME DELAY (comment out when not a test!!!!!)
+TIMEDELAYT = 0.001; 
+inputDelayT = 0.001;
+
 
 % Load the first image into a texture
 texture = Screen('MakeTexture', window, images{1});
@@ -202,6 +209,8 @@ resizedTexture = Screen('MakeTexture', window, resizedImage);
 % Display the resized image and loop until spacebar is pressed
 spacePressed = false;
 lastKeyPressTime = 0;
+escapeKey = KbName('ESCAPE');
+
 while ~spacePressed
     % Display the image
     Screen('DrawTexture', window, resizedTexture);
@@ -210,9 +219,14 @@ while ~spacePressed
     % Check for spacebar press
     [keyIsDown, ~, keyCode] = KbCheck;
     currentTime = GetSecs;
-    if keyIsDown && keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
-        spacePressed = true;
-        lastKeyPressTime = currentTime;
+    if keyIsDown
+        if keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
+            spacePressed = true;
+            lastKeyPressTime = currentTime;
+        elseif keyCode(escapeKey)
+            sca;
+            return;
+        end
     end
 end
 
@@ -235,9 +249,15 @@ while ~spacePressed
     % Check for spacebar press
     [keyIsDown, ~, keyCode] = KbCheck;
     currentTime = GetSecs;
-    if keyIsDown && keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
-        spacePressed = true;
-        lastKeyPressTime = currentTime;
+    
+    if keyIsDown
+        if keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
+            spacePressed = true;
+            lastKeyPressTime = currentTime;
+        elseif keyCode(escapeKey)
+            sca;
+            return;
+        end
     end
 end
 
@@ -304,9 +324,14 @@ exitTutorial = false;
 inputDelay = 0.3;
 while ~exitTutorial
     [keyIsDown, secs, keyCode] = KbCheck;
-    if keyIsDown && keyCode(spaceKey) && (secs - thisLastInputTime) > inputDelay
-        exitTutorial = true;
-        thisLastInputTime = secs; % Update the time of the last space press
+    if keyIsDown
+        if keyCode(spaceKey) && (secs - thisLastInputTime) > inputDelay
+            exitTutorial = true;
+            thisLastInputTime = secs; % Update the time of the last space press
+        elseif keyCode(escapeKey)
+            sca;
+            return;
+        end
     end
 end
 
@@ -491,20 +516,25 @@ while ~spacePressed
     % Check for spacebar press
     [keyIsDown, ~, keyCode] = KbCheck;
     currentTime = GetSecs;
-    if keyIsDown && keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
-        spacePressed = true;
-        lastKeyPressTime = currentTime;
+    if keyIsDown
+        if keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
+            spacePressed = true;
+            lastKeyPressTime = currentTime;
+        elseif keyCode(escapeKey)
+            sca;
+            return;
+        end
     end
 end  
 
-programNumber = 2;
+programNumber = 3; % make sure to change between 2 and 3 to alternate between tumor groups
 if programNumber == 1
     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Astrocytoma (Updated)');
-    tumorType = 'astrocytoma';
+    tumorType = 'astrocytoma';      
 elseif programNumber == 2
     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligoastrocytoma (Updated)');
      tumorType = 'oligoastrocytma';
-elseif programNumber == 3 
+elseif programNumber == 3
     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligodendroglioma (Updated)');
     tumorType = 'oligodendroglioma';
 end 
@@ -580,9 +610,11 @@ dataMatrix = NaN(n);
 dataMatrix(1:n+1:end) = 0;
 
 % Initialize time variables
-TIMEDELAY = .0001; % Time delay in seconds
+% TIMEDELAY = .3; % Time delay in seconds; 0.001 for testing and 0.3 otherwise
+TIMEDELAY = 0.0001;
 thisLastInputTime = GetSecs;
-inputDelay = .00111 33333333333333333333333333333333333333333301;
+% inputDelay = .2; %0.0001 for testing and 0.2 otherwise
+inputDelay = 0.0001;
 % while counter <= numComparisons
 while counter <= length(arrayComb)
     randomInteger = randi([1, length(arrayComb)]);
@@ -725,6 +757,11 @@ while counter <= length(arrayComb)
             % Check if enough time has passed since the last number input
             thisTime = GetSecs;
             totalTime = thisTime - thisLastInputTime;
+
+            if keyCode(escapeKey)
+                sca; % Close the screen and exit
+                return;
+            end
             
             if ~isempty(userInput) && ismember(userInput, [1, 2, 3, 4, 5, 6, 7, 8, 9]) && totalTime >= inputDelay
                 selectedNumbers = [selectedNumbers; randomInteger];
@@ -829,8 +866,7 @@ filename = sprintf('T2HAM_%d_%s_%s.mat', programNumber, userName, currentDate);
 
 %Sam & Christina; 7/23/24 - temporary hard coding fix. Make sure to add
 %heiger\Desktop to path before running 
-%desktopPath = "C:\Users\heiger\Desktop";
-desktopPath = "C:\Users\samso\OneDrive\Desktop\lab\code\Haran\Data Sam";
+desktopPath = "C:\Users\heiger\Desktop";
 
 % Construct the full file path using the desktop path and the filename
 fullFilePath = fullfile(desktopPath, filename);
