@@ -1,7 +1,7 @@
 %function T2Final
 
 PsychDefaultSetup(2);
-Screen('Preference', 'SkipSyncTests', 1);
+%Screen('Preference', 'SkipSyncTests', 1);
 
 targetSize = [227, 227];
 
@@ -32,8 +32,6 @@ sizey = screenHeight;
 [xpix, ypix] = Screen('WindowSize', window);
 [xCenter, yCenter] = RectCenter(windowRect);
 
-originalFolderPath = fileparts(mfilename('fullpath'));
-
 CONTROLNUM = 10;
 TIMELIM = 30;
 thisLastInputTimeT = 0;
@@ -55,7 +53,7 @@ for i = 1:numImages
     images{i} = imread(imagePaths{i});
 end
 
-Probability_Finder = fullfile(originalFolderPath, 'T2 MRI', 'Probability Finder');
+Probability_Finder = './T2 MRI/Probability Finder';
 
 gliomaTutorialFilePattern = fullfile(gliomaTutorialTestingFolder, '*.jpg');
 gliomaTutorialFiles = dir(gliomaTutorialFilePattern);
@@ -94,7 +92,7 @@ for k = 1:length(gliomaTutorialFiles)
             sNintT = sNintT + 1;
             storedNumbersT(firstSixDigitNumberT) = sNintT;
             imageArrayOArrayTutorial{sNintT} = {gliomaFullFileNameT};
-            
+
             gliomaNumbersT(k) = sNintT;
         else
             imageArrayOArrayTutorial{storedNumbersT(firstSixDigitNumberT)} = [imageArrayOArrayTutorial{storedNumbersT(firstSixDigitNumberT)}; gliomaFullFileNameT];
@@ -286,7 +284,7 @@ secondRowYPos = 3 * sizey / 4;  % Y position for the second row
 secondRowXPos = linspace(sizex / 4, (sizex / 4) * 3, 2);  % Evenly spaced X positions for the second row
 
 % Load images and create textures for the tutorial images
-textures = [];
+textures = zeros(1,length(tutorialImages));
 for i = 1:length(tutorialImages)
     imgPath = tutorialImages{i};  % Get the path of the tutorial image
     img = imread(imgPath);  % Load the image
@@ -528,18 +526,18 @@ end
 
 programNumber = 3; % make sure to change between 2 and 3 to alternate between tumor groups
 if programNumber == 1
-    folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Astrocytoma (Updated)');
+    folderThree = './T2 MRI/Astrocytoma (Updated)';
     tumorType = 'astrocytoma';
 elseif programNumber == 2
-    folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligoastrocytoma (Updated)');
+    folderThree = './T2 MRI/Oligoastrocytoma (Updated)';
     tumorType = 'oligoastrocytma';
 elseif programNumber == 3
-    folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligodendroglioma (Updated)');
+    folderThree = './T2 MRI/Oligodendroglioma (Updated)';
     tumorType = 'oligodendroglioma';
 end
 
-controlFolder = fullfile(originalFolderPath, 'T2 MRI', 'Healthy-Control (Updated)');
-meningiomaTestingFolder = fullfile(originalFolderPath, 'T2 MRI', 'Meningioma (Updated)');
+controlFolder = './T2 MRI/Healthy-Control (Updated)';
+meningiomaTestingFolder = './T2 MRI/Meningioma (Updated)';
 
 thirdFilePattern = fullfile(folderThree, '*.jpg');
 thirdFiles = dir(thirdFilePattern);
@@ -556,9 +554,9 @@ imageNames = cell(totalFiles, 1);
 
 storedNumbers = containers.Map('KeyType', 'int32', 'ValueType', 'int32');
 sNint = 0;
-imageArrayOArray = [];
 
 
+imageArrayOArray = {};
 thirdNumbers = [];
 meningiomaNumbers = [];
 controlNumbers = [];
@@ -568,16 +566,11 @@ controlNumbers = [];
 [imageNames, storedNumbers, sNint, imageArrayOArray, meningiomaNumbers] = fileProcess(meningiomaFiles, imageNames, 5 , storedNumbers, sNint, imageArrayOArray, meningiomaNumbers);
 [imageNames, storedNumbers, sNint, imageArrayOArray, controlNumbers] = fileProcess(controlFiles, imageNames, 6, storedNumbers, sNint, imageArrayOArray, controlNumbers);
 
-% Remove empty array from imageArrayOArray if it exists
-if isempty(imageArrayOArray{end})
-    imageArrayOArray = imageArrayOArray(1:end-1);
-end
 
+% Remove empty array from imageArrayOArray if it exists 
+empty = cellfun('isempty',imageArrayOArray);
+imageArrayOArray(:,all(empty,1)) = [];
 
-% Remove empty array from imageArrayOArray if it exists
-if isempty(imageArrayOArray{end})
-    imageArrayOArray = imageArrayOArray(1:end-1);
-end
 
 callNumbers = zeros(length(imageArrayOArray), 1);
 
@@ -634,6 +627,7 @@ while counter <= length(arrayComb)
     if ~ismember(randomInteger, selectedNumbers)
         maxLength = max(length(imageArrayOArray{leftSide}), length(imageArrayOArray{rightSide}));
         minLength = min(length(imageArrayOArray{leftSide}), length(imageArrayOArray{rightSide}));
+        
         if length(imageArrayOArray{leftSide})>length(imageArrayOArray{rightSide})
             minSide = rightSide;
             maxSide = leftSide;
@@ -801,6 +795,7 @@ for k = 1:length(keysList)
     valueLength = length(mapObj(key));
     disp(['Key: ', key, ', Length of Value: ', num2str(valueLength)]);
 end
+
 % Close the window and clean up
 [Y, stress] = cmdscale(dataMatrix, 2);
 
