@@ -1,16 +1,11 @@
 %function T2Final
-% Here we call some default settings for setting up Psychtoolbox
-% Here we call some default settings for setting up Psychtoolbox
-% Here we call some default settings for setting up Psychtoolbox
+
 PsychDefaultSetup(2);
 Screen('Preference', 'SkipSyncTests', 1);
 
 targetSize = [227, 227];
 
-% Get the screen numbers. This gives us a number for each of the screens
-% attached to our computer.
-%       33322 67348
-
+% Get the screen numbers. This gives us a number for each of the screens attached to our computer.
 screenNumber = max(Screen('Screens'));
 
 % Now, we get the size of the screen using Screen('WindowSize')
@@ -19,7 +14,7 @@ screenNumber = max(Screen('Screens'));
 % Display the dimensions in the MATLAB Command Window
 fprintf('Screen width: %d pixels\n', screenWidth);
 fprintf('Screen height: %d pixels\n', screenHeight);
- 
+
 screens = Screen('Screens');
 screenNumber = max(screens);
 white = [1 1 1]; % White color
@@ -37,10 +32,8 @@ sizey = screenHeight;
 [xpix, ypix] = Screen('WindowSize', window);
 [xCenter, yCenter] = RectCenter(windowRect);
 
-CONTROLNUM = 10;
-
 originalFolderPath = fileparts(mfilename('fullpath'));
-  
+
 CONTROLNUM = 10;
 TIMELIM = 30;
 thisLastInputTimeT = 0;
@@ -49,7 +42,8 @@ originalTutorialFolderPath = fileparts(mfilename('fullpath'));
 controlTutorialFolder = fullfile(originalTutorialFolderPath, 'T2 MRI', 'T2 MRI/Healthy-Control (Updated)');
 gliomaTutorialTestingFolder = fullfile(originalTutorialFolderPath, 'InstructionFolder', 'Training', 'Glioma');
 meningiomaTutorialTestingFolder = fullfile(originalTutorialFolderPath, 'InstructionFolder', 'Training', 'Meningioma');
-imageFolder = fullfile(originalTutorialFolderPath, 'InstructionFolder','Tutorial Images'); 
+%imageFolder = fullfile(originalTutorialFolderPath, 'InstructionFolder','Tutorial Images');
+imageFolder = './InstructionFolder/Tutorial Images';
 
 imageNames = {'Slide1.jpg', 'Slide2.jpg', 'Slide3.jpg'};
 imagePaths = cellfun(@(name) fullfile(imageFolder, name), imageNames, 'UniformOutput', false);
@@ -77,11 +71,14 @@ imageTutorialNames = cell(totalTutorialFiles, 1);
 
 storedNumbersT = containers.Map('KeyType', 'int32', 'ValueType', 'int32');
 sNintT = 0;
-imageArrayOArrayTutorial = {};
 
-gliomaNumbersT = [];
-meningiomaNumbersT = [];
-controlNumbersT = [];
+
+%Pre-allocating array for optimization and to work with Pack&Go
+imageArrayOArrayTutorial = cell(1,length(gliomaTutorialFiles));
+gliomaNumbersT = zeros(1,length(gliomaTutorialFiles));
+meningiomaNumbersT = zeros(1,length(meningiomaTutorialFiles));
+controlNumbersT = zeros(1,length(gliomaTutorialFiles));
+
 % Store glioma image names
 for k = 1:length(gliomaTutorialFiles)
     gliomaBaseFileNameT = gliomaTutorialFiles(k).name;
@@ -89,15 +86,16 @@ for k = 1:length(gliomaTutorialFiles)
     imageTutorialNames{k} = gliomaFullFileNameT;
     patternT = '\d{6}';
     matchT = regexp(gliomaBaseFileNameT, patternT, 'match', 'once');
-    
-    
+
+
     if ~isempty(matchT)
         firstSixDigitNumberT = str2double(matchT);
         if ~isKey(storedNumbersT, firstSixDigitNumberT)
             sNintT = sNintT + 1;
             storedNumbersT(firstSixDigitNumberT) = sNintT;
             imageArrayOArrayTutorial{sNintT} = {gliomaFullFileNameT};
-            gliomaNumbersT = [gliomaNumbersT; sNintT];
+            
+            gliomaNumbersT(k) = sNintT;
         else
             imageArrayOArrayTutorial{storedNumbersT(firstSixDigitNumberT)} = [imageArrayOArrayTutorial{storedNumbersT(firstSixDigitNumberT)}; gliomaFullFileNameT];
         end
@@ -106,6 +104,9 @@ for k = 1:length(gliomaTutorialFiles)
     end
 end
 
+% Remove the zeroes entries from pre-allocated gliomaNumbersT array
+gliomaNumbersT(gliomaNumbersT==0) = [];
+
 % Store meningioma image names
 for k = 1:length(meningiomaTutorialFiles)
     meningiomaBaseFileNameT = meningiomaTutorialFiles(k).name;
@@ -113,15 +114,15 @@ for k = 1:length(meningiomaTutorialFiles)
     imageTutorialNames{k + length(gliomaTutorialFiles)} = meningiomaFullFileNameT;
     patternT = '\d{5}';
     matchT = regexp(meningiomaBaseFileNameT, patternT, 'match', 'once');
-    
+
     if ~isempty(matchT)
         firstSixDigitNumberT = str2double(matchT);
-        
+
         if ~isKey(storedNumbersT, firstSixDigitNumberT)
             sNintT = sNintT + 1;
             storedNumbersT(firstSixDigitNumberT) = sNintT;
             imageArrayOArrayTutorial{sNintT} = {meningiomaFullFileNameT};
-            meningiomaNumbersT = [meningiomaNumbersT;sNintT];
+            meningiomaNumbersT(k) = sNintT;
         else
             imageArrayOArrayTutorial{storedNumbersT(firstSixDigitNumberT)} = [imageArrayOArrayTutorial{storedNumbersT(firstSixDigitNumberT)}; meningiomaFullFileNameT];
         end
@@ -129,6 +130,8 @@ for k = 1:length(meningiomaTutorialFiles)
         disp('No 6-digit number found in the file name.');
     end
 end
+% Remove the zeroes entries from pre-allocated gliomaNumbersT array
+meningiomaNumbersT(meningiomaNumbersT==0) = [];
 
 % Store control image names
 for k = 1:length(controlTutorialFiles)
@@ -145,12 +148,11 @@ for k = 1:length(controlTutorialFiles)
     end
 end
 
-% Remove empty array from imageArrayOArray if it exists
-if isempty(imageArrayOArrayTutorial{end}) %this is the line with the error indicating that the imageArray is empty at the end 
-    imageArrayOArrayTutorial = imageArrayOArrayTutorial(1:end-1);
-end
+% Remove empty cells from imageArrayOArray
+empty = cellfun('isempty',imageArrayOArrayTutorial);
+imageArrayOArrayTutorial(:,all(empty,1)) = [];
 
-%Determines Combinations That Will Occur In Pairing
+% Determines Combinations That Will Occur In Pairing
 numComparisonsT = (length(imageArrayOArrayTutorial) * (length(imageArrayOArrayTutorial) - 1)) / 2;
 arrayCombT = struct('subjectOne', 'int32', 'subjectTwo', 'int32');
 counterFirstT = 1;
@@ -172,15 +174,13 @@ rightSideT = 0;
 selectedNumbersT = [];
 dataMatrixT = zeros(length(imageArrayOArrayTutorial));
 
-% Initialize time variables; make sure this is NOT commented out when
-% running experiment
+% Initialize time variables; make sure this is NOT commented out when running experiment
 % TIMEDELAYT = 0.3; % Time delay in seconds
 % inputDelayT = .2;
 
-%TEST TIME DELAY (comment out when not a test!!!!!)
-TIMEDELAYT = 0.001; 
+% TEST TIME DELAY (comment out when not a test!!!!!)
+TIMEDELAYT = 0.001;
 inputDelayT = 0.001;
-
 
 % Load the first image into a texture
 texture = Screen('MakeTexture', window, images{1});
@@ -230,7 +230,7 @@ while ~spacePressed
     end
 end
 
-% Load the second image into a texture   232323 
+% Load the second image into a texture
 texture = Screen('MakeTexture', window, images{2});
 
 % Resize the second image to fit the screen using the same dimensions
@@ -240,7 +240,7 @@ resizedImage = imresize(images{2}, [resizedHeight, resizedWidth]);
 resizedTexture = Screen('MakeTexture', window, resizedImage);
 
 % Display the resized second image and loop until spacebar is pressed
-spacePressed = false;     
+spacePressed = false;
 while ~spacePressed
     % Display the image
     Screen('DrawTexture', window, resizedTexture);
@@ -249,7 +249,7 @@ while ~spacePressed
     % Check for spacebar press
     [keyIsDown, ~, keyCode] = KbCheck;
     currentTime = GetSecs;
-    
+
     if keyIsDown
         if keyCode(KbName('space')) && (currentTime - lastKeyPressTime >= inputDelayT)
             spacePressed = true;
@@ -262,14 +262,12 @@ while ~spacePressed
 end
 
 tutorialImages = {
-    fullfile(Probability_Finder , 'astrocytomatutorial.png'),  % astrocytoma
-    fullfile(Probability_Finder, 'meningiomTutorial.png'),  % meningioma
-    fullfile(Probability_Finder, 'tutorial.jpg'),  % control
-    fullfile(Probability_Finder, 'oligodendrogliomaTutorial.png'),  % oligodendroglioma
-    fullfile(Probability_Finder, 'oligoAstrocytomaTutorial.png')  % oligoastrocytoma
-};
-
-
+    fullfile(Probability_Finder , 'astrocytomatutorial.png'),  ... astrocytoma
+    fullfile(Probability_Finder, 'meningiomTutorial.png'),  ... meningioma
+    fullfile(Probability_Finder, 'tutorial.jpg'),  ... control
+    fullfile(Probability_Finder, 'oligodendrogliomaTutorial.png'),  ... oligodendroglioma
+    fullfile(Probability_Finder, 'oligoAstrocytomaTutorial.png')  ... oligoastrocytoma
+    };
 
 % Define the size for each image
 imageWidth = 175;  % Width of the images
@@ -340,7 +338,7 @@ while counterT <= 4
     yT = 1;
     randomIntegerT = randi([1, length(arrayCombT)]);
     randomSideT = randi([0, 1]);
-    
+
     if randomSideT == 0
         leftSideT = arrayCombT(randomIntegerT).subjectOne;
         rightSideT = arrayCombT(randomIntegerT).subjectTwo;
@@ -359,7 +357,7 @@ while counterT <= 4
         rightSideT  = 4;
         responseText = 'GUIDE: I am VERY DOUBTFUL that the two groups of images are depicting \n the same types of brain tumors, please rate these set of images with a 4';
     elseif counterT == 3
-        leftSideT = 5; 
+        leftSideT = 5;
         rightSideT = 6;
         responseText = 'GUIDE: I am SLIGHTLY CONFIDENT that the two groups of images are the depicting \n the same type of brain tumors, please rate these set of images with a 2';
     elseif counterT == 4
@@ -378,7 +376,7 @@ while counterT <= 4
             minSideT = leftSideT;
             maxSideT = rightSideT;
         end
-       
+
         prevRightKeyStateT = 0;
         xCycleT = 0;
         yCycleT = 0;
@@ -387,12 +385,9 @@ while counterT <= 4
         currentTimeT = 0;
         elapsedTimeT = 0;
         lastInputTime = 0;
-        while validInputT == false 
-           [mouseXT, mouseYT] = GetMouse(window);
-            %disp('mouseX');
-            %disp(mouseXT);
-            %disp('mouseY');
-            %disp(mouseYT);
+        while validInputT == false
+            [mouseXT, mouseYT] = GetMouse(window);
+
             currentTimeT = GetSecs;
             elapsedTimeT = currentTimeT - lastInputTime;
             originalxT = sizey/1.5;
@@ -400,18 +395,18 @@ while counterT <= 4
             otherOriginalxT = sizey/1.5;
             otherImageRectT = CenterRectOnPointd([0 0 otherOriginalxT otherOriginalxT], xCenter + (sizex / 4), yCenter);
 
-            if leftSideT == minSideT 
-               leftImageT = imageArrayOArrayTutorial{leftSideT}{yT};
-               rightImageT = imageArrayOArrayTutorial{rightSideT}{xT};
-               xRectT = otherImageRectT;
-               yRectT = imageRectT;
+            if leftSideT == minSideT
+                leftImageT = imageArrayOArrayTutorial{leftSideT}{yT};
+                rightImageT = imageArrayOArrayTutorial{rightSideT}{xT};
+                xRectT = otherImageRectT;
+                yRectT = imageRectT;
             else
-               leftImageT = imageArrayOArrayTutorial{leftSideT}{xT};
-               rightImageT = imageArrayOArrayTutorial{rightSideT}{yT};
-               xRectT = imageRectT;
-               yRectT = otherImageRectT;
+                leftImageT = imageArrayOArrayTutorial{leftSideT}{xT};
+                rightImageT = imageArrayOArrayTutorial{rightSideT}{yT};
+                xRectT = imageRectT;
+                yRectT = otherImageRectT;
             end
-            
+
             if elapsedTimeT >= TIMEDELAYT && mouseXT >= xRectT(1) && mouseXT <= xRectT(3) && mouseYT >= xRectT(2) && mouseYT <= xRectT(4)
                 if mod(xCycleT, 2) == 0 && xT < maxLengthT
                     xT = xT + 1;
@@ -423,7 +418,7 @@ while counterT <= 4
                     xCycleT = xCycleT + 1;
                 end
             end
-           
+
             if elapsedTimeT >= TIMEDELAYT && mouseXT >= yRectT(1) && mouseXT <= yRectT(3) && mouseYT >= yRectT(2) && mouseYT <= yRectT(4)
                 if mod(yCycleT, 2) == 0 && yT < minLengthT
                     yT = yT + 1;
@@ -434,35 +429,35 @@ while counterT <= 4
                 else
                     yCycleT = yCycleT + 1;
                 end
-            end 
-         
+            end
+
 
             imageFullFileNameT = leftImageT;
             imageArrayT = imread(imageFullFileNameT);
             imageArrayT = imresize(imageArrayT, targetSize);
             imageTextureT = Screen('MakeTexture', window, imageArrayT);
 
-         
-            
-           % originalx = changeDimension(originalx,controlFolder,imageFullFileName, -62);
+
+
+            % originalx = changeDimension(originalx,controlFolder,imageFullFileName, -62);
             imageRectT = CenterRectOnPointd([0 0 originalxT originalxT], xCenter - (sizex / 4), yCenter);
-                    
-            
+
+
             otherImageFullFileNameT = rightImageT;
             otherImageArrayT = imread(otherImageFullFileNameT);
             otherImageArrayT = imresize(otherImageArrayT, targetSize);
             otherImageTextureT = Screen('MakeTexture', window, otherImageArrayT);
-            
+
             otherOriginalxT = sizey/1.5;
-          % otherOriginalx = changeDimension(otherOriginalx,controlFolder,otherImageFullFileName, -62);
+            % otherOriginalx = changeDimension(otherOriginalx,controlFolder,otherImageFullFileName, -62);
             otherImageRectT = CenterRectOnPointd([0 0 otherOriginalxT otherOriginalxT], xCenter + (sizex / 4), yCenter);
-            
-            
-            
-            
+
+
+
+
             Screen('DrawTexture', window, imageTextureT, [], imageRectT);
             Screen('DrawTexture', window, otherImageTextureT, [], otherImageRectT);
-            
+
             promptText = 'Rate confidence in tumor similarity between the two images on a scale from 1 to 4:';
             textFont = 'Arial';
             textSize = round(sizex * 0.02);
@@ -472,18 +467,18 @@ while counterT <= 4
             DrawFormattedText(window, promptText, 'center', sizey * 0.81, textColor, [], [], [], [], [], windowRect);
             DrawFormattedText(window, responseText, 'center', sizey * 0.91, textColor, [], [], [], [], [], windowRect);
 
-            
-            
+
+
             Screen('Flip', window);
             [~, ~, keyCode] = KbCheck;
-           
+
             userInputT = KbName(find(keyCode, 1, 'first'));
             userInputT = str2double(regexp(char(userInputT), '\d', 'match'));
-            
+
             % Check if enough time has passed since the last number input
             thisTimeT = GetSecs;
             totalTimeT = thisTimeT - thisLastInputTimeT;
-            
+
             if ~isempty(userInputT) && ismember(userInputT, [1, 2, 3, 4]) && totalTimeT >= inputDelayT
                 selectedNumbersT = [selectedNumbersT; randomIntegerT];
                 thisLastInputTimeT = GetSecs;
@@ -492,8 +487,8 @@ while counterT <= 4
                 counterT = counterT + 1;
                 validInputT = true;
             end
-            end
         end
+    end
 end
 
 % Load the third image into a texture
@@ -525,19 +520,19 @@ while ~spacePressed
             return;
         end
     end
-end  
+end
 
 programNumber = 3; % make sure to change between 2 and 3 to alternate between tumor groups
 if programNumber == 1
     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Astrocytoma (Updated)');
-    tumorType = 'astrocytoma';      
+    tumorType = 'astrocytoma';
 elseif programNumber == 2
     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligoastrocytoma (Updated)');
-     tumorType = 'oligoastrocytma';
+    tumorType = 'oligoastrocytma';
 elseif programNumber == 3
     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligodendroglioma (Updated)');
     tumorType = 'oligodendroglioma';
-end 
+end
 
 controlFolder = fullfile(originalFolderPath, 'T2 MRI', 'Healthy-Control (Updated)');
 meningiomaTestingFolder = fullfile(originalFolderPath, 'T2 MRI', 'Meningioma (Updated)');
@@ -552,7 +547,7 @@ controlFilePattern = fullfile(controlFolder, '*.jpg');
 controlFiles = dir(controlFilePattern);
 
 
-totalFiles = length(thirdFiles) + length(meningiomaFiles) + length(controlFiles) ; %%+ length(oligoastroFiles)+ length(oligodenFiles);
+totalFiles = length(thirdFiles) + length(meningiomaFiles) + length(controlFiles) ;
 imageNames = cell(totalFiles, 1);
 
 storedNumbers = containers.Map('KeyType', 'int32', 'ValueType', 'int32');
@@ -561,18 +556,13 @@ imageArrayOArray = [];
 
 
 thirdNumbers = [];
-meningiomaNumbers = []; %13
-controlNumbers = []; %19
-% Store astrocytoma image names
+meningiomaNumbers = [];
+controlNumbers = [];
 
+% Store astrocytoma image names
 [imageNames, storedNumbers, sNint, imageArrayOArray, thirdNumbers] = fileProcess(thirdFiles, imageNames, 3, storedNumbers, sNint, imageArrayOArray, thirdNumbers);
 [imageNames, storedNumbers, sNint, imageArrayOArray, meningiomaNumbers] = fileProcess(meningiomaFiles, imageNames, 5 , storedNumbers, sNint, imageArrayOArray, meningiomaNumbers);
 [imageNames, storedNumbers, sNint, imageArrayOArray, controlNumbers] = fileProcess(controlFiles, imageNames, 6, storedNumbers, sNint, imageArrayOArray, controlNumbers);
-% Remove empty array from imageArrayOArray if it exists
-if isempty(imageArrayOArray{end})
-    imageArrayOArray = imageArrayOArray(1:end-1);
-end
-
 
 % Remove empty array from imageArrayOArray if it exists
 if isempty(imageArrayOArray{end})
@@ -580,6 +570,10 @@ if isempty(imageArrayOArray{end})
 end
 
 
+% Remove empty array from imageArrayOArray if it exists
+if isempty(imageArrayOArray{end})
+    imageArrayOArray = imageArrayOArray(1:end-1);
+end
 
 callNumbers = zeros(length(imageArrayOArray), 1);
 
@@ -588,7 +582,7 @@ arrayComb = struct('subjectOne', 'int32', 'subjectTwo', 'int32');
 counterFirst = 1;
 
 mapObj = containers.Map('KeyType', 'char', 'ValueType', 'any');
-for i = 1:4 
+for i = 1:4
     for k = 1:length(imageArrayOArray)
         for j = k + 1:length(imageArrayOArray)
             arrayComb(counterFirst).subjectOne = k;
@@ -596,7 +590,7 @@ for i = 1:4
             counterFirst = counterFirst + 1;
         end
     end
-end 
+end
 
 % Main loop
 counter = 1;
@@ -610,16 +604,18 @@ dataMatrix = NaN(n);
 dataMatrix(1:n+1:end) = 0;
 
 % Initialize time variables
-% TIMEDELAY = .3; % Time delay in seconds; 0.001 for testing and 0.3 otherwise
+% Time delay in seconds; 0.001 for testing and 0.3 otherwise
+% Input delay in seconds; 0.0001 for testing and 0.2 otherwise
+% TIMEDELAY = .3;
+% inputDelay = .2;  0.0001 for testing and 0.2 otherwise
 TIMEDELAY = 0.0001;
 thisLastInputTime = GetSecs;
-% inputDelay = .2; %0.0001 for testing and 0.2 otherwise
 inputDelay = 0.0001;
-% while counter <= numComparisons
+
 while counter <= length(arrayComb)
     randomInteger = randi([1, length(arrayComb)]);
     randomSide = randi([0, 1]);
-    
+
     if randomSide == 0
         leftSide = arrayComb(randomInteger).subjectOne;
         rightSide = arrayComb(randomInteger).subjectTwo;
@@ -627,10 +623,10 @@ while counter <= length(arrayComb)
         leftSide = arrayComb(randomInteger).subjectTwo;
         rightSide = arrayComb(randomInteger).subjectOne;
     end
-     x = 1; %tracking longer length
-     y = 1; % tracking shorter length
+    x = 1; %tracking longer length
+    y = 1; % tracking shorter length
 
-     
+
     if ~ismember(randomInteger, selectedNumbers)
         maxLength = max(length(imageArrayOArray{leftSide}), length(imageArrayOArray{rightSide}));
         minLength = min(length(imageArrayOArray{leftSide}), length(imageArrayOArray{rightSide}));
@@ -641,11 +637,11 @@ while counter <= length(arrayComb)
             minSide = leftSide;
             maxSide = rightSide;
         end
-  
+
         callNumbers(leftSide) = callNumbers(leftSide) + 1;
         callNumbers(rightSide) = callNumbers(rightSide) + 1;
-        
-        
+
+
         prevRightKeyState = 0;
         xCycle = 0;
         yCycle = 0;
@@ -654,7 +650,7 @@ while counter <= length(arrayComb)
         currentTime = 0;
         elapsedTime = 0;
         lastInputTime = 0;
-        while validInput == false 
+        while validInput == false
             [mouseX, mouseY] = GetMouse(window);
             currentTime = GetSecs;
             elapsedTime = currentTime - lastInputTime;
@@ -663,34 +659,34 @@ while counter <= length(arrayComb)
             otherOriginalx = sizey/1.5;
             otherImageRect = CenterRectOnPointd([0 0 otherOriginalx otherOriginalx], xCenter + (sizex / 4), yCenter);
 
-            if leftSide == minSide 
-               leftImage = imageArrayOArray{leftSide}{y};
-               rightImage = imageArrayOArray{rightSide}{x};
-               xRect = otherImageRect;
-               yRect = imageRect;
+            if leftSide == minSide
+                leftImage = imageArrayOArray{leftSide}{y};
+                rightImage = imageArrayOArray{rightSide}{x};
+                xRect = otherImageRect;
+                yRect = imageRect;
             else
-               leftImage = imageArrayOArray{leftSide}{x};
-               rightImage = imageArrayOArray{rightSide}{y};
-               xRect = imageRect;
-               yRect = otherImageRect;
+                leftImage = imageArrayOArray{leftSide}{x};
+                rightImage = imageArrayOArray{rightSide}{y};
+                xRect = imageRect;
+                yRect = otherImageRect;
             end
-            
-            %Testing MDS plotting given different thresholds:
+
+            % Testing MDS plotting given different thresholds:
             % Extract the folder name
             folderPath = fileparts(leftImage);
             folderParts = strsplit(folderPath, filesep);
             folderName = folderParts{end};
-            
+
             % Display the folder name
             disp('left');
             leftText = folderName;
             disp(leftText);
 
-             % Extract the folder name
+            % Extract the folder name
             folderPathTwo = fileparts(rightImage);
             folderPartsTwo = strsplit(folderPathTwo, filesep);
             folderNameTwo = folderPartsTwo{end};
-            
+
             % Display the folder name
             disp('right');
             rightText = folderNameTwo;
@@ -706,7 +702,7 @@ while counter <= length(arrayComb)
                     xCycle = xCycle + 1;
                 end
             end
-       
+
             if elapsedTime >= TIMEDELAY && mouseX >= yRect(1) && mouseX <= yRect(3) && mouseY >= yRect(2) && mouseY <= yRect(4)
                 if mod(yCycle, 2) == 0 && y < minLength
                     y = y + 1;
@@ -717,29 +713,25 @@ while counter <= length(arrayComb)
                 else
                     yCycle = yCycle + 1;
                 end
-            end 
-         
+            end
+
             imageFullFileName = leftImage;
             imageArray = imread(imageFullFileName);
             imageArray = imresize(imageArray, targetSize);
             imageTexture = Screen('MakeTexture', window, imageArray);
-
-            %originalx = changeDimension(originalx,meningiomaTestingFolder,imageFullFileName,62);
             imageRect = CenterRectOnPointd([0 0 originalx originalx], xCenter - (sizex / 4), yCenter);
-                    
-            
+
             otherImageFullFileName = rightImage;
             otherImageArray = imread(otherImageFullFileName);
             otherImageArray = imresize(otherImageArray, targetSize);
             otherImageTexture = Screen('MakeTexture', window, otherImageArray);
-            
+
             otherOriginalx = sizey/1.5;
-            %otherOriginalx = changeDimension(otherOriginalx,meningiomaTestingFolder, otherImageFullFileName,62);
             otherImageRect = CenterRectOnPointd([0 0 otherOriginalx otherOriginalx], xCenter + (sizex / 4), yCenter);
 
             Screen('DrawTexture', window, imageTexture, [], imageRect);
             Screen('DrawTexture', window, otherImageTexture, [], otherImageRect);
-            
+
             promptText = 'Rate confidence in tumor similarity between the two images on a scale from 1 to 9:';
             textFont = 'Arial';
             textSize = round(sizex * 0.02);
@@ -747,13 +739,13 @@ while counter <= length(arrayComb)
 
             Screen('TextSize', window, textSize);
             DrawFormattedText(window, promptText, 'center', sizey * 0.95, textColor, [], [], [], [], [], windowRect);
-            
+
             Screen('Flip', window);
             [~, ~, keyCode] = KbCheck;
-           
+
             userInput = KbName(find(keyCode, 1, 'first'));
             userInput = str2double(regexp(char(userInput), '\d', 'match'));
-            
+
             % Check if enough time has passed since the last number input
             thisTime = GetSecs;
             totalTime = thisTime - thisLastInputTime;
@@ -762,42 +754,42 @@ while counter <= length(arrayComb)
                 sca; % Close the screen and exit
                 return;
             end
-            
+
             if ~isempty(userInput) && ismember(userInput, [1, 2, 3, 4, 5, 6, 7, 8, 9]) && totalTime >= inputDelay
                 selectedNumbers = [selectedNumbers; randomInteger];
                 thisLastInputTime = GetSecs;
                 if (leftSide>rightSide)
                     s1 = num2str(leftSide);
                     s2 = num2str(rightSide);
-                else 
+                else
                     s1 = num2str(rightSide);
                     s2 = num2str(leftSide);
                 end
 
                 v1 = strcat(s1, ',', s2); % Key creation
-                
+
                 if ~mapObj.isKey(v1)
-                    list1 = [userInput];
-                else 
+                    list1 = userInput;
+                else
                     list1 = mapObj(v1);
                     list1 = [list1; userInput]; % Vertical concatenation
-                end 
+                end
                 % Update the map with the new or modified list
-                mapObj(v1) = list1; % Re-assign updated list back to map      
+                mapObj(v1) = list1; % Re-assign updated list back to map
                 value = mean(list1); % Calculate mean of the updated list
                 disp("list");
                 disp(list1);
                 disp("value");
                 disp(value);
                 dataMatrix(leftSide, rightSide) = value;
-                dataMatrix(rightSide, leftSide) = value;  
+                dataMatrix(rightSide, leftSide) = value;
                 counter = counter + 1;
                 validInput = true;
             end
-            end
         end
+    end
 end
-sca; 
+sca;
 
 keysList = keys(mapObj);
 for k = 1:length(keysList)
@@ -811,8 +803,6 @@ end
 thirdPoints = Y(1:length(thirdNumbers), 1:2); % the meningioma indices in the Y values directly corresponds to the timing they were inputed 1,2,3
 meningiomaPoints = Y(length(thirdNumbers)+1:(length(thirdNumbers)+length(meningiomaNumbers)), 1:2); %4,5,6,7,8
 controlPoints = Y(length(thirdNumbers)+1+length(meningiomaNumbers):length(thirdNumbers)+length(meningiomaNumbers)+length(controlNumbers), 1:2); %9,10,11,12
-%%oligoastroPoints = Y(length(astrocytomaNumbers)+1+length(meningiomaNumbers)+length(controlNumbers):length(astrocytomaNumbers)+length(meningiomaNumbers)+length(controlNumbers)+length(oligoastroNumbers), 1:2); %13,14,15,16
-%%oligodenPoints = Y(length(astrocytomaNumbers)+1+length(meningiomaNumbers)+length(controlNumbers)+length(oligoastroNumbers):length(astrocytomaNumbers)+length(meningiomaNumbers)+length(controlNumbers)+length(oligoastroNumbers)+length(oligodenNumbers), 1:2); %17,18,19,20
 
 % Create an empty struct array
 point_mapping = struct('index', [], 'point', []);
@@ -829,63 +819,12 @@ for i = 1:size(Y,1)
     point_mapping(i).index = i;
     point_mapping(i).point = Y(i,:);
 end
-
-
-%% Prompt the user for their name with a dialog box
-
-
-prompt = {'Enter your name:'};
-dlgtitle = 'User Name Input';
-dims = [1 35]; % Defines the dimensions of the input dialog box
-definput = {'YourName'}; % Default input or a hint for the user
-userNameAnswer = inputdlg(prompt, dlgtitle, dims, definput);
-
-% Check if the user provided a name or clicked cancel
-if isempty(userNameAnswer)
-    disp('User canceled the operation.');
-    return; % Exit the script or handle the cancellation appropriately
-else
-    userName = userNameAnswer{1}; % Extract the string from the cell array
-end
-
-% Construct the filename using the user's name and the current date for uniqueness
-% Define the current date
-currentDate = datetime('today', 'Format', 'dd-MMM-yyyy');
-
-% Define the filename66
-filename = sprintf('T2HAM_%d_%s_%s.mat', programNumber, userName, currentDate);
-
-% Specify the directory where you want to save the file (e.g., user's desktop)
-%Error: Error using save
-%Cannot create 'T2HAM_1_Test5_23-Jul-2024.mat' because
-%'C:\Users\chris\Desktop' does not exist.
-%Error in UpdatedT2HAMV (line 832)
-%save(fullFilePath, 'thirdPoints', 'meningiomaPoints', 'controlPoints', 'point_mapping', 'meningiomaNumbers', 'numberVarName', 'controlNumbers', 'thirdNumbers', 'dataMatrix');
- 
-%desktopPath = fullfile(getenv('USERPROFILE'), 'Desktop');
-
-%Sam & Christina; 7/23/24 - temporary hard coding fix. Make sure to add
-%heiger\Desktop to path before running 
-desktopPath = "C:\Users\heiger\Desktop";
-
-% Construct the full file path using the desktop path and the filename
-fullFilePath = fullfile(desktopPath, filename);
-
-% Save the data to the file on the desktop
-save(fullFilePath, 'thirdPoints', 'meningiomaPoints', 'controlPoints', 'point_mapping', 'meningiomaNumbers', 'numberVarName', 'controlNumbers', 'thirdNumbers', 'dataMatrix');
-
-% Inform the user where the file has been saved
-fprintf('Your experiment results have been saved to: %s\n', fullFilePath);
-
-
-%data imbalance MDS - division 
-
+Screen('closeAll')
 
 function destRect = getDestinationRectangle(index, firstRowXPos, secondRowXPos, firstRowYPos, secondRowYPos, imageWidth, imageHeight)
-    if index <= 3  % First row images
-        destRect = CenterRectOnPointd([0 0 imageWidth imageHeight], firstRowXPos(index), firstRowYPos);
-    else  % Second row images
-        destRect = CenterRectOnPointd([0 0 imageWidth imageHeight], secondRowXPos(index-3), secondRowYPos);
-    end
+if index <= 3  % First row images
+    destRect = CenterRectOnPointd([0 0 imageWidth imageHeight], firstRowXPos(index), firstRowYPos);
+else  % Second row images
+    destRect = CenterRectOnPointd([0 0 imageWidth imageHeight], secondRowXPos(index-3), secondRowYPos);
 end
-  
+end
