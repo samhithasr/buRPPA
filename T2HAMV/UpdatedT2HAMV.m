@@ -796,34 +796,5 @@ for k = 1:length(keysList)
     disp(['Key: ', key, ', Length of Value: ', num2str(valueLength)]);
 end
 
-% Close the window and clean up
-[Y, stress] = cmdscale(dataMatrix, 2);
-
-thirdPoints = Y(1:length(thirdNumbers), 1:2); % the meningioma indices in the Y values directly corresponds to the timing they were inputed 1,2,3
-meningiomaPoints = Y(length(thirdNumbers)+1:(length(thirdNumbers)+length(meningiomaNumbers)), 1:2); %4,5,6,7,8
-controlPoints = Y(length(thirdNumbers)+1+length(meningiomaNumbers):length(thirdNumbers)+length(meningiomaNumbers)+length(controlNumbers), 1:2); %9,10,11,12
-
-% Create an empty struct array
-point_mapping = struct('index', [], 'point', []);
-
-pointVarName = [tumorType, 'Points'];
-eval([pointVarName ' = thirdPoints;']);
-
-numberVarName = [tumorType, 'Numbers'];
-% Assign the value of thirdNumbers to the new variable
-eval([numberVarName ' = thirdNumbers;']);
-
-for i = 1:size(Y,1)
-    % Populate the struct array
-    point_mapping(i).index = i;
-    point_mapping(i).point = Y(i,:);
-end
-Screen('closeAll')
-
-function destRect = getDestinationRectangle(index, firstRowXPos, secondRowXPos, firstRowYPos, secondRowYPos, imageWidth, imageHeight)
-if index <= 3  % First row images
-    destRect = CenterRectOnPointd([0 0 imageWidth imageHeight], firstRowXPos(index), firstRowYPos);
-else  % Second row images
-    destRect = CenterRectOnPointd([0 0 imageWidth imageHeight], secondRowXPos(index-3), secondRowYPos);
-end
-end
+Screen('closeAll');
+save('./saved_data.mat', 'tumorType' ,'meningiomaNumbers', 'controlNumbers', 'thirdNumbers', 'dataMatrix');
