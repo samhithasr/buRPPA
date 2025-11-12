@@ -1,7 +1,5 @@
-%function T2Final
-
+% include short tutorial program in introduction
 PsychDefaultSetup(2);
-%Screen('Preference', 'SkipSyncTests', 1);
 
 targetSize = [227, 227];
 

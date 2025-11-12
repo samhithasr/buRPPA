@@ -1,12 +1,20 @@
-% include short tutorial program in intoduction
 % include short tutorial program in introduction
 PsychDefaultSetup(2);
-Screen('Preference', 'SkipSyncTests', 1);
 
 targetSize = [227, 227]; % Maintain your target size
 
 % Get the screen number for the primary display
 screenNumber = max(Screen('Screens'));
+
+% Now, we get the size of the screen using Screen('WindowSize')
+[screenWidth, screenHeight] = Screen('WindowSize', screenNumber);
+
+% Display the dimensions in the MATLAB Command Window
+fprintf('Screen width: %d pixels\n', screenWidth);
+fprintf('Screen height: %d pixels\n', screenHeight);
+
+screens = Screen('Screens');
+screenNumber = max(screens);
 
 % Pre-define color values
 white = WhiteIndex(screenNumber); % Dynamic white level based on screen calibration
@@ -25,18 +33,6 @@ sizey = ypix; % Fullscreen height
 % With the fullscreen setup, leftCoord and topCoord effectively become 0,0 at the top left corner
 leftCoord = 400;
 topCoord = 0;
-
-% No need to open the window again as it's already fullscreen
-% Instead, directly proceed to utilize the fullscreen window as needed
-
-% Get the size of the window again (redundant, as it's already fullscreen, but included for completeness)
-[xpix, ypix] = Screen('WindowSize', window);
-
-% Calculate the center of the screen/window
-[xCenter, yCenter] = RectCenter(windowRect);     
-
-% Open the window with the calculated position
-
 
 % Get the new window size
 [xpix, ypix] = Screen('WindowSize', window);
@@ -136,17 +132,6 @@ yCycle = 0; % Initialize yCycle
 % Path to the introductory slide
 introSlidePath = fullfile(originalFolderPath, 'T2 MRI', 'Probability Finder', 'TutorialIntroduction.jpg');
 
-
-
-% Check if the file exists
-if exist(introSlidePath, 'file') == 2
-    % File exists, so read the image
-    introImage = imread(introSlidePath);
-else
-    % File does not exist, throw an error
-    error('File does not exist: %s', introSlidePath);
-end
-
 % Load the introductory image
 introImage = imread(introSlidePath);
 
@@ -192,11 +177,11 @@ end
 Screen('Close', introTexture);
 
 tutorialImages = {
-    fullfile(Probability_Finder , 'astrocytomatutorial.png'),  % astrocytoma
-    fullfile(Probability_Finder, 'meningiomTutorial.png'),  % meningioma
-    fullfile(Probability_Finder, 'tutorial.jpg'),  % control
-    fullfile(Probability_Finder, 'oligodendrogliomaTutorial.png'),  % oligodendroglioma
-    fullfile(Probability_Finder, 'oligoAstrocytomaTutorial.png')  % oligoastrocytoma
+    fullfile(Probability_Finder , 'astrocytomatutorial.png'),  ... astrocytoma
+    fullfile(Probability_Finder, 'meningiomTutorial.png'),  ... meningioma
+    fullfile(Probability_Finder, 'tutorial.jpg'),  ... control
+    fullfile(Probability_Finder, 'oligodendrogliomaTutorial.png'),  ... oligodendroglioma
+    fullfile(Probability_Finder, 'oligoAstrocytomaTutorial.png')  ... oligoastrocytoma
 };
 
 
@@ -446,51 +431,4 @@ disp(thirdAccuracyMatrix);
 matrixVarName = [tumorType, 'AccuracyMatrix'];
 eval([matrixVarName ' = thirdAccuracyMatrix;']);
 
-%% Prompt the user for their name with a dialog box
-
-
-prompt = {'Enter your name:'};
-dlgtitle = 'User Name Input';
-dims = [1 35]; % Defines the dimensions of the input dialog box
-definput = {'YourName'}; % Default input or a hint for the user
-userNameAnswer = inputdlg(prompt, dlgtitle, dims, definput);
-
-% Check if the user provided a name or clicked cancel
-if isempty(userNameAnswer)
-    disp('User canceled the operation.');
-    return; % Exit the script or handle the cancellation appropriately
-else
-    userName = userNameAnswer{1}; % Extract the string from the cell array
-end
-
-currentDate = datetime('today', 'Format', 'dd-MMM-yyyy');
-
-% Define the filenamem
-filename = sprintf('PFTHAM_%d_%s_%s.mat', programNumber, userName, currentDate);
-
-% Specify the directory where you want to save the file (e.g., user's desktop)
-% desktopPath = fullfile(getenv('USERPROFILE'), 'Desktop');
-
-% Sam and Christina - 7/23/24 Temporary fix for save issue, this following
-% line seems to fix the problem, along with adding heiger\desktop to path
-% before running the program
-desktopPath = "C:\Users\heiger\Desktop";
-
-% Construct the full file path using the desktop path and the filename
-fullFilePath = fullfile(desktopPath, filename);
-
-% Save the data to the file on the desktop
-save(fullFilePath, 'letter','meningiomaNumbers', 'controlNumbers', 'thirdNumbers', 'meningiomaAccuracyMatrix', 'thirdAccuracyMatrix', 'controlAccuracyMatrix');
-
-% Inform the user where the file has been saved
-fprintf('Your experiment results have been saved to: %s\n', fullFilePath);
-
-% Now you have separate accuracy matrices for each group with percentages
-
-function destRect = getDestinationRectangle(index, firstRowXPos, secondRowXPos, firstRowYPos, secondRowYPos, imageWidth, imageHeight)
-    if index <= 3  % First row images
-        destRect = CenterRectOnPointd([0 0 imageWidth imageHeight], firstRowXPos(index), firstRowYPos);
-    else  % Second row images
-        destRect = CenterRectOnPointd([0 0 imageWidth imageHeight], secondRowXPos(index-3), secondRowYPos);
-    end
-end
+Screen('closeAll');
