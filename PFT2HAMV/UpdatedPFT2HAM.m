@@ -41,22 +41,22 @@ topCoord = 0;
 
 originalFolderPath = fileparts(mfilename('fullpath'));
 
-Probability_Finder = fullfile(originalFolderPath, 'T2 MRI', 'Probability Finder');
-controlFolder = fullfile(originalFolderPath, 'T2 MRI', 'Healthy-Control (Updated)');
-meningiomaTestingFolder = fullfile(originalFolderPath, 'T2 MRI', 'Meningioma (Updated)');
+Probability_Finder = './T2 MRI/Probability Finder';
+controlFolder = './T2 MRI/Healthy-Control (Updated)';
+meningiomaTestingFolder = './T2 MRI/Meningioma (Updated)';
 
 
 programNumber = 3;
 if programNumber == 1
-    folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Astrocytoma (Updated)');
+    folderThree = './T2 MRI/Astrocytoma (Updated)';
     tumorType = 'astrocytoma';
     letter = 'a';
 elseif programNumber ==2
-     folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligoastrocytoma (Updated)');
+     folderThree = './T2 MRI/Oligoastrocytoma (Updated)';
      tumorType = 'oligoastrocytoma';
      letter = 'o';
 elseif programNumber ==3 
-    folderThree = fullfile(originalFolderPath, 'T2 MRI', 'Oligodendroglioma (Updated)');
+    folderThree = './T2 MRI/Oligodendroglioma (Updated)';
     tumorType = 'oligodendroglioma';
     letter = 'd';
 end 
@@ -130,7 +130,7 @@ yCycle = 0; % Initialize yCycle
 
 % Path to the introductory slide
 % Path to the introductory slide
-introSlidePath = fullfile(originalFolderPath, 'T2 MRI', 'Probability Finder', 'TutorialIntroduction.jpg');
+introSlidePath = './T2 MRI/Probability Finder/TutorialIntroduction.jpg';
 
 % Load the introductory image
 introImage = imread(introSlidePath);
