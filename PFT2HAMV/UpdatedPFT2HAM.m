@@ -432,3 +432,4 @@ matrixVarName = [tumorType, 'AccuracyMatrix'];
 eval([matrixVarName ' = thirdAccuracyMatrix;']);
 
 Screen('closeAll');
+save('./saved_data.mat', 'imageArrayOArray' ,'responseMatrix', 'meningiomaNumbers', 'controlNumbers', 'thirdNumbers');
